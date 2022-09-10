@@ -1,23 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
+import { MemoChildren } from "./Children";
 
 function App() {
+  const getData = useRef(() => {});
+  const effectRun = useRef(true);
+
+  const [dataJoke, setDataJoke] = useState(null);
+  const [renderTime, setRenderTime] = useState(0);
+
+  const onSubmit = () => {
+    getData.current();
+  };
+
+  getData.current = async () => {
+    try {
+      const { data } = await axios.get(
+        "https://v2.jokeapi.dev/joke/Any?idRange=0-55"
+      );
+      setDataJoke(JSON.stringify(data.id));
+    } catch (error) {
+      console.error("error", error);
+    }
+  };
+
+  useEffect(() => {
+    getData.current();
+  }, []);
+
+  console.log("parent", renderTime);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Hello World </h1>
+      <button onClick={() => setRenderTime((prev) => prev + 1)}>
+        RE-RENDER APP
+      </button>
+      <MemoChildren onClick={onSubmit} data={dataJoke} />
     </div>
   );
 }
