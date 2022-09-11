@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 
 const Children=({ onClick, data })=> {
+  console.log("children")
   return (
     <>
       <button onClick={onClick}>HIT API</button>

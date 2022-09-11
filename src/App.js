@@ -5,8 +5,7 @@ import { MemoChildren } from "./Children";
 
 function App() {
   const getData = useRef(() => {});
-  const effectRun = useRef(true);
-
+  const [timeLeft, setTimeLeft] = useState(10000000);
   const [dataJoke, setDataJoke] = useState(null);
   const [renderTime, setRenderTime] = useState(0);
 
@@ -25,17 +24,27 @@ function App() {
     }
   };
 
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimeLeft((t) => t - 1);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
   useEffect(() => {
     getData.current();
   }, []);
 
   console.log("parent", renderTime);
+
   return (
     <div className="App">
       <h1>Hello World </h1>
       <button onClick={() => setRenderTime((prev) => prev + 1)}>
         RE-RENDER APP
       </button>
+      <h1>{timeLeft}</h1>
       <MemoChildren onClick={onSubmit} data={dataJoke} />
     </div>
   );
